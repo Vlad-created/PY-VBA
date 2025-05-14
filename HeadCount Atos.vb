@@ -1,19 +1,38 @@
+Sub FilterOutGermany()
+    Dim ws As Worksheet
+    Dim lastRow As Long
+    Dim rng As Range
+    Set ws = ThisWorkbook.Sheets("202505")
+
+    lastRow = ws.Cells(ws.Rows.Count, "F").End(xlUp).Row
+    Set rng = ws.Range("F2:F" & lastRow)
+    
+    
+    ws.Range("A2:F" & lastRow).AutoFilter Field:=6, Criteria1:="<>GERMANY"
+    
+End Sub
+
+
+
 Sub CalculateHC()
     Dim ws As Worksheet
     Set ws = ThisWorkbook.Sheets("202505")
 
 
+     
+    ws.Range("AG2").Formula = "=IFERROR(XLOOKUP([@[DAS ID C]],'Nessie report '!A:A, 'Nessie report '!F:F), ""N/A"")"
+    ws.Range("AK2").Formula = "=XLOOKUP([@[DAS ID C]],'Nessie report '!A:A,'Nessie report '!U:U)"
     ws.Range("AN2").Formula = "=IF([@[HRSS/Onsite]]=""GSSC"",""Offshore-onroll"",""Onsite-onroll"")"
-ws.Range("AN2:AN" & ws.Cells(ws.Rows.Count, "AM").End(xlUp).Row).FillDown
-ws.Range("AN:AN").Value = ws.Range("AN:AN").Value
-
-
+    ws.Range("AO2").NumberFormat = "m/d/yyyy"
+    ws.Range("AO2").Formula = "=IFERROR(XLOOKUP([@[DAS ID C]],'Nessie report '!A:A,'Nessie report '!AR:AR),1/1/1900)"
+    ws.Range("AN2").Formula = "=IF([@[HRSS/Onsite]]=""GSSC"",""Offshore-onroll"",""Onsite-onroll"")"
     ws.Range("AV2").Formula = "=IF(AND(ISBLANK(AO2),ISBLANK(AP2)),"""",IF(ISBLANK(AP2),(TODAY()-AO2)/365,(AP2-AO2)/365))"
     ws.Range("AW2").Formula = "=IF(AV2="""","""",IF(AV2<=0.5,""0-6M"",IF(AND(AV2>0.5,AV2<=1),""6M - 1Y"",IF(AND(AV2>1,AV2<=2),""1-2Y"",IF(AND(AV2>2,AV2<=3),""2-3Y"",IF(AND(AV2>3,AV2<=5),""3-5Y"",IF(AND(AV2>5,AV2<=10),""5-10Y"",IF(AV2>10,""10+Y"",""""))))))))"
     ws.Range("AX2").Formula = "=IF(ISBLANK([@Age]),"""",IF([@Age]<26,""<26"",IF([@Age]<30,""26-30"",IF([@Age]<36,""30-36"",IF([@Age]<41,""36-40"",IF([@Age]<46,""41-45"",IF([@Age]<51,""46-50"",IF([@Age]<56,""51-55"",""55+""))))))))"
-ws.Range("AV2:AX" & ws.Cells(ws.Rows.Count, "AT").End(xlUp).Row).FillDown
-ws.Range("AV:AX").Value = ws.Range("AV:AX").Value
+ws.Range("AG2:AX" & ws.Cells(ws.Rows.Count, "A").End(xlUp).Row).FillDown
+ws.Range("AG:AX").Value = ws.Range("AG:AX").Value
    
+    ws.Range("BE2").Formula = "=IF(I2=""A5"",""Intern"",""Permanent"")"
     ws.Range("BK2").Formula = "=IF([@[Nessie Status]]=""NonHR"",""-"",IF([@[Nessie Status]]=""NonHR"",""-"",IF(OR(AND(YEAR([@[ML Start Date]])<2024,YEAR([@[ML Start Date]])>1900)),IF(OR(ISBLANK([@[ML End Date]]),AND(MONTH([@[ML End Date]])>1,YEAR([@[ML End Date]])>=2024)),""ML"",""""),IF([@[Intern/Permanent]]=""Intern"",""---"",IF(AND(MONTH([@[Start Date]])>1,YEAR([@[Start Date]])=2024),""--"",IF(AND(MONTH([@[Start Date]])=1,NUMBERVALUE(YEAR([@[Start Date]]))=2024),""IN"",IF(AND(MONTH([@[Exit Date]])=1,NUMBERVALUE(YEAR([@[Exit Date]]))=2024),""OUT"",IF(AND(MONTH([@[ML Start Date]])=1,YEAR([@[ML Start Date]])=2024),""ML OUT"",IF(AND(MONTH([@[ML End Date]])=1,YEAR([@[ML End Date]])=2024),""ML IN"",IF(AND(MONTH([@[Start Date]])>=1,NUMBERVALUE(YEAR([@[Start Date]]))=2025),""--"",""HC""))))))))))"
     ws.Range("BL2").Formula = "=IF([@[Nessie Status]]=""NonHR"",""-"",IF([@[Intern/Permanent]]=""Intern"",""---"",IF(AND(MONTH([@[Start Date]])>2,YEAR([@[Start Date]])=2024),""--"",IF(OR([@[Jan-24]]=""OUT"",[@[Jan-24]]=""-""),""-"",IF(OR([@[Jan-24]]=""ML OUT"",AND(NOT(AND(MONTH([@[ML End Date]])=2,YEAR([@[ML End Date]])=2024)),[@[Jan-24]]=""ML"")),""ML"",IF(AND(MONTH([@[Start Date]])=2,NUMBERVALUE(YEAR([@[Start Date]]))=2024),""IN"",IF(AND(MONTH([@[Exit Date]])=2,NUMBERVALUE(YEAR([@[Exit Date]]))=2024),""OUT"",IF(AND(MONTH([@[ML Start Date]])=2,YEAR([@[ML Start Date]])=2024),""ML OUT"",IF(AND(MONTH([@[ML End Date]])=2,YEAR([@[ML End Date]])=2024),""ML IN"",IF(AND(MONTH([@[Start Date]])>=1,NUMBERVALUE(YEAR([@[Start Date]]))=2025),""--"",""HC""))))))))))"
     ws.Range("BM2").Formula = "=IF([@[Nessie Status]]=""NonHR"",""-"",IF([@[Intern/Permanent]]=""Intern"",""---"",IF(AND(MONTH([@[Start Date]])>3,YEAR([@[Start Date]])=2024),""--"",IF(OR([@[Feb-24]]=""OUT"",[@[Feb-24]]=""-""),""-"",IF(OR([@[Feb-24]]=""ML OUT"",AND(NOT(AND(MONTH([@[ML End Date]])=3,YEAR([@[ML End Date]])=2024)),[@[Feb-24]]=""ML"")),""ML"",IF(AND(MONTH([@[Start Date]])=3,NUMBERVALUE(YEAR([@[Start Date]]))=2024),""IN"",IF(AND(MONTH([@[Exit Date]])=3,NUMBERVALUE(YEAR([@[Exit Date]]))=2024),""OUT"",IF(AND(MONTH([@[ML Start Date]])=3,YEAR([@[ML Start Date]])=2024),""ML OUT"",IF(AND(MONTH([@[ML End Date]])=3,YEAR([@[ML End Date]])=2024),""ML IN"",IF(AND(MONTH([@[Start Date]])>=1,NUMBERVALUE(YEAR([@[Start Date]]))=2025),""--"",""HC""))))))))))"
