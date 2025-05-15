@@ -13,7 +13,7 @@ Sub ExcludeGermanyRows()
      End If
      Next i
 
-    MsgBox "Rows with 'GERMANY' in column F have been hidden."
+    MsgBox "Ohhh! Again you! Rows with 'GERMANY' in column F have been hidden."
 End Sub
 
 
@@ -22,19 +22,30 @@ End Sub
 Sub CalculateHC()
     Dim ws As Worksheet
     Set ws = ThisWorkbook.Sheets("202505")
-
-
+    
+    ws.Range("E2").Formula2 = "=IFERROR(XLOOKUP(A2, 'Nessie report '!A:A, 'Nessie report '!S:S), ""N/A"")"
+    ws.Range("F2").Formula2 = "=IFERROR(XLOOKUP([@[DAS ID C]], 'Nessie report '!A:A, 'Nessie report '!AF:AF), ""N/A"")"
+    ws.Range("H2").Formula2 = "=IFERROR(XLOOKUP([@[DAS ID C]], 'Nessie report '!A:A, 'Nessie report '!Z:Z), ""N/A"")"
+    ws.Range("I2").Formula2 = "=IFERROR(XLOOKUP([@[DAS ID C]], 'Nessie report '!A:A, 'Nessie report '!AB:AB), ""N/A"")"
+    ws.Range("J2").Formula2 = "=IFERROR(XLOOKUP([@[DAS ID C]], 'Nessie report '!A:A, 'Nessie report '!J:J), ""N/A"")"
+    ws.Range("L2").Formula2 = "=IFERROR(XLOOKUP([@[DAS ID C]], 'Nessie report '!A:A, 'Nessie report '!AJ:AJ), ""N/A"")"
+    ws.Range("M2").Formula2 = "=IFERROR(XLOOKUP([@[DAS ID C]], 'Nessie report '!A:A, 'Nessie report '!AK:AK), ""N/A"")"
+    ws.Range("O2").Formula2 = "=IFERROR(XLOOKUP([@[DAS ID C]], 'Nessie report '!A:A, 'Nessie report '!H:H), ""N/A"")"
+    ws.Range("S2").Formula2 = "=IFERROR(XLOOKUP([@[DAS ID C]], 'Nessie report '!A:A, 'Nessie report '!X:X), ""N/A"")"
+    ws.Range("T2").Formula2 = "=IFERROR(XLOOKUP([@[DAS ID C]], 'Nessie report '!A:A, 'Nessie report '!Y:Y), ""N/A"")"
+    ws.Range("U2").Formula2 = "=IFERROR(XLOOKUP([@[DAS ID C]], 'Nessie report '!A:A, 'Nessie report '!E:E), ""NON HR"")"
+    ws.Range("V2").Formula2 = "=IFERROR(XLOOKUP([@[DAS ID C]], 'Nessie report '!A:A, 'Nessie report '!F:F), ""N/A"")"
     ws.Range("AG2").Formula = "=IFERROR(XLOOKUP([@[DAS ID C]],'Nessie report '!A:A, 'Nessie report '!F:F), ""N/A"")"
     ws.Range("AK2").Formula = "=XLOOKUP([@[DAS ID C]],'Nessie report '!A:A,'Nessie report '!U:U)"
-    ws.Range("AN2").Formula = "=IF([@[HRSS/Onsite]]=""GSSC"",""Offshore-onroll"",""Onsite-onroll"")"
     ws.Range("AO2").NumberFormat = "m/d/yyyy"
     ws.Range("AO2").Formula = "=IFERROR(XLOOKUP([@[DAS ID C]],'Nessie report '!A:A,'Nessie report '!AR:AR),1/1/1900)"
     ws.Range("AN2").Formula = "=IF([@[HRSS/Onsite]]=""GSSC"",""Offshore-onroll"",""Onsite-onroll"")"
     ws.Range("AV2").Formula = "=IF(AND(ISBLANK(AO2),ISBLANK(AP2)),"""",IF(ISBLANK(AP2),(TODAY()-AO2)/365,(AP2-AO2)/365))"
     ws.Range("AW2").Formula = "=IF(AV2="""","""",IF(AV2<=0.5,""0-6M"",IF(AND(AV2>0.5,AV2<=1),""6M - 1Y"",IF(AND(AV2>1,AV2<=2),""1-2Y"",IF(AND(AV2>2,AV2<=3),""2-3Y"",IF(AND(AV2>3,AV2<=5),""3-5Y"",IF(AND(AV2>5,AV2<=10),""5-10Y"",IF(AV2>10,""10+Y"",""""))))))))"
     ws.Range("AX2").Formula = "=IF(ISBLANK([@Age]),"""",IF([@Age]<26,""<26"",IF([@Age]<30,""26-30"",IF([@Age]<36,""30-36"",IF([@Age]<41,""36-40"",IF([@Age]<46,""41-45"",IF([@Age]<51,""46-50"",IF([@Age]<56,""51-55"",""55+""))))))))"
-ws.Range("AG2:AX" & ws.Cells(ws.Rows.Count, "A").End(xlUp).Row).FillDown
-ws.Range("AG:AX").Value = ws.Range("AG:AX").Value
+    ws.Range("E2:AV" & ws.Cells(ws.Rows.Count, "A").End(xlUp).Row).FillDown
+ ws.Range("E:V").Value = ws.Range("E:AX").Value
+ ws.Range("AG:AX").Value = ws.Range("AG:AX").Value
    
     ws.Range("BE2").Formula = "=IF(I2=""A5"",""Intern"",""Permanent"")"
     ws.Range("BK2").Formula = "=IF([@[Nessie Status]]=""NonHR"",""-"",IF([@[Nessie Status]]=""NonHR"",""-"",IF(OR(AND(YEAR([@[ML Start Date]])<2024,YEAR([@[ML Start Date]])>1900)),IF(OR(ISBLANK([@[ML End Date]]),AND(MONTH([@[ML End Date]])>1,YEAR([@[ML End Date]])>=2024)),""ML"",""""),IF([@[Intern/Permanent]]=""Intern"",""---"",IF(AND(MONTH([@[Start Date]])>1,YEAR([@[Start Date]])=2024),""--"",IF(AND(MONTH([@[Start Date]])=1,NUMBERVALUE(YEAR([@[Start Date]]))=2024),""IN"",IF(AND(MONTH([@[Exit Date]])=1,NUMBERVALUE(YEAR([@[Exit Date]]))=2024),""OUT"",IF(AND(MONTH([@[ML Start Date]])=1,YEAR([@[ML Start Date]])=2024),""ML OUT"",IF(AND(MONTH([@[ML End Date]])=1,YEAR([@[ML End Date]])=2024),""ML IN"",IF(AND(MONTH([@[Start Date]])>=1,NUMBERVALUE(YEAR([@[Start Date]]))=2025),""--"",""HC""))))))))))"
@@ -61,16 +72,23 @@ ws.Range("AG:AX").Value = ws.Range("AG:AX").Value
     ws.Range("CF2").Formula = "=IF([@[Nessie Status]]=""NonHR"",""-"",IF([@[Intern/Permanent]]=""Intern"",""---"",IF(AND(MONTH([@[Start Date]])>10,YEAR([@[Start Date]])=2025),""--"",IF(OR([@[Sep-25]]=""OUT"",[@[Sep-25]]=""-""),""-"",IF(OR([@[Sep-25]]=""ML OUT"",AND(NOT(AND(MONTH([@[ML End Date]])=10,YEAR([@[ML End Date]])=2025)),[@[Sep-25]]=""ML"")),""ML"",IF(AND(MONTH([@[Start Date]])=10,NUMBERVALUE(YEAR([@[Start Date]]))=2025),""IN"",IF(AND(MONTH([@[Exit Date]])=10,NUMBERVALUE(YEAR([@[Exit Date]]))=2025),""OUT"",IF(AND(MONTH([@[ML Start Date]])=10,YEAR([@[ML Start Date]])=2025),""ML OUT"",IF(AND(MONTH([@[ML End Date]])=10,YEAR([@[ML End Date]])=2025),""ML IN"",IF(AND(MONTH([@[Start Date]])>=1,NUMBERVALUE(YEAR([@[Start Date]]))=2026),""--"",""HC""))))))))))"
     ws.Range("CG2").Formula = "=IF([@[Nessie Status]]=""NonHR"",""-"",IF([@[Intern/Permanent]]=""Intern"",""---"",IF(AND(MONTH([@[Start Date]])>11,YEAR([@[Start Date]])=2025),""--"",IF(OR([@[Oct-25]]=""OUT"",[@[Oct-25]]=""-""),""-"",IF(OR([@[Oct-25]]=""ML OUT"",AND(NOT(AND(MONTH([@[ML End Date]])=11,YEAR([@[ML End Date]])=2025)),[@[Oct-25]]=""ML"")),""ML"",IF(AND(MONTH([@[Start Date]])=11,NUMBERVALUE(YEAR([@[Start Date]]))=2025),""IN"",IF(AND(MONTH([@[Exit Date]])=11,NUMBERVALUE(YEAR([@[Exit Date]]))=2025),""OUT"",IF(AND(MONTH([@[ML Start Date]])=11,YEAR([@[ML Start Date]])=2025),""ML OUT"",IF(AND(MONTH([@[ML End Date]])=11,YEAR([@[ML End Date]])=2025),""ML IN"",IF(AND(MONTH([@[Start Date]])>=1,NUMBERVALUE(YEAR([@[Start Date]]))=2026),""--"",""HC""))))))))))"
     ws.Range("CH2").Formula = "=IF([@[Nessie Status]]=""NonHR"",""-"",IF([@[Intern/Permanent]]=""Intern"",""---"",IF(AND(MONTH([@[Start Date]])>12,YEAR([@[Start Date]])=2025),""--"",IF(OR([@[Nov-25]]=""OUT"",[@[Nov-25]]=""-""),""-"",IF(OR([@[Nov-25]]=""ML OUT"",AND(NOT(AND(MONTH([@[ML End Date]])=12,YEAR([@[ML End Date]])=2025)),[@[Nov-25]]=""ML"")),""ML"",IF(AND(MONTH([@[Start Date]])=12,NUMBERVALUE(YEAR([@[Start Date]]))=2025),""IN"",IF(AND(MONTH([@[Exit Date]])=12,NUMBERVALUE(YEAR([@[Exit Date]]))=2025),""OUT"",IF(AND(MONTH([@[ML Start Date]])=12,YEAR([@[ML Start Date]])=2025),""ML OUT"",IF(AND(MONTH([@[ML End Date]])=12,YEAR([@[ML End Date]])=2025),""ML IN"",IF(AND(MONTH([@[Start Date]])>=1,NUMBERVALUE(YEAR([@[Start Date]]))=2026),""--"",""HC""))))))))))"
+ ws.Range("BK2:CH" & ws.Cells(ws.Rows.Count, "A").End(xlUp).Row).FillDown
+ ws.Range("BK:CH").Value = ws.Range("BK:CH").Value
 
-ws.Range("BK2:CH" & ws.Cells(ws.Rows.Count, "A").End(xlUp).Row).FillDown
-
-ws.Range("BK:CH").Value = ws.Range("BK:CH").Value
-
-MsgBox "Hey! You bag of bones! Yes, you! Are you unable to work manually? No?!??!?, that's alright! Just run me again if needed"
-
-
+ MsgBox "Hey! You bag of bones! Yes, you! Are you unable to work manually? No?!??!?, that's alright! Just run me again if needed"
 End Sub
 
+Sub AgeandCTC()
+    Dim ws As Worksheet
+    Dim lastRow As Long
+    Set ws = ThisWorkbook.Sheets("202505")
+
+    ws.Range("X2").Formula = "=IFERROR(XLOOKUP([@[DAS ID C]],CTC!A:A,CTC!D:D),""N/A"")"
+    ws.Range("Y2").Formula = "=IFERROR(XLOOKUP([@[DAS ID C]],CTC!A:A,CTC!E:E),""N/A"")"
+ws.Range("X2:Y" & ws.Cells(ws.Rows.Count, "A").End(xlUp).Row).FillDown
+ws.Range("X:Y").Value = ws.Range("X:Y").Value
+
+End Sub
 
 
 Sub UnhideGermanyRows()
@@ -82,10 +100,10 @@ Sub UnhideGermanyRows()
       lastRow = ws.Cells(ws.Rows.Count, "F").End(xlUp).Row
 
      For i = 2 To lastRow 
-      If Trim(UCase(ws.Cells(i, "F").Value)) = "GERMANY" Then
+     If Trim(UCase(ws.Cells(i, "F").Value)) = "GERMANY" Then
      ws.Rows(i).EntireRow.Hidden = False
      End If
      Next i
 
-     MsgBox "Rows with 'GERMANY' in column F have been unhidden."
+     MsgBox "Again you? Rows with 'GERMANY' in column F have been unhidden."
 End Sub
