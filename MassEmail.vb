@@ -26,7 +26,7 @@ myFilePath = ThisWorkbook.Path & "\"
 
 For I = 1 To 31   ' The upper value of i is the number of groups to whom you want to send files.
     For j = 0 To 31
-myWorkbookFileName = ThisWorkbook.Sheets(1).Cells(2, 5) & "_" & Recipients(j, 4) & ThisWorkbook.Sheets(1).Cells(2, 6)    '   OR & ".xls" if you are using Office 2003
+myWorkbookFileName = Sheets(1).Cells(2, 5) & "_" & Recipients(j, 4) & Sheets(1).Cells(2, 6) & ".xlsx"    '   OR & ".xls" if you are using Office 2003
 Set myOutlook = GetObject(, "Outlook.Application")
 Set myMessage = myOutlook.CreateItem(ItemType:=olMailItem)
 
@@ -37,7 +37,7 @@ Set myMessage = myOutlook.CreateItem(ItemType:=olMailItem)
         .To = Recipients(j, 2)
         .Subject = Sheets("Sheet1").Cells(32, 1)
         .BodyFormat = olFormatHTML
-        .HTMLBody = "Çäðàâåéòå,<br><br>" & Sheets("Sheet1").Cells(33, 1) & "<br><br>" & "Ïîçäðàâè!" & .HTMLBody   ' Or whatever you want to insert
+        .HTMLBody = "Hello,<br><br>" & Sheets("Sheet1").Cells(33, 1) & "<br><br>" & "Kind Regards!" & .HTMLBody   ' Or whatever you want to insert
         .Attachments.Add myFilePath & myWorkbookFileName
         .SentOnBehalfOfName = "reportsteam@a1.bg"
         .Send
