@@ -1,0 +1,8 @@
+let
+    address = [Address],
+    url = "https://nominatim.openstreetmap.org/search?format=json&q=" & Text.Replace(address, " ", "%20"),
+    response = Json.Document(Web.Contents(url)),
+    lat = if List.Count(response) > 0 then response{0}[lat] else null,
+    lon = if List.Count(response) > 0 then response{0}[lon] else null
+in
+    lat & ", " & lon

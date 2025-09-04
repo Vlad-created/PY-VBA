@@ -1,0 +1,10 @@
+'CancelationRate'
+CancelationRate% = 
+VAR RefusedRate = 
+SUM('All Regions'[Refused])
+VAR PerformedRate = 
+SUM('All Regions'[Performed])
+VAR CancelationRate = 
+SUM('All Regions'[Refused]) + SUM('All Regions'[Performed])
+RETURN
+	(DIVIDE(RefusedRate, CancelationRate,0))

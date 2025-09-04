@@ -1,0 +1,12 @@
+'DateMonth'
+ThisMonth = FORMAT(TODAY(), "MMMM")
+'PreviousMonth-1'
+PreviousMonth -1 = FORMAT(EDATE(TODAY(), -1), "MMMM")
+
+' Count veliki 117
+
+Veliki_117 Count = 
+CALCULATE(
+    COUNTROWS('Base PID'),
+    'Base PID'[Channel Name] = "А1 м-н Ст.Загора,С.Велики 117"
+)

@@ -1,0 +1,19 @@
+% Customers by Quarter = 
+VAR TotalCustomers =
+    CALCULATE(
+        DISTINCTCOUNT('YourTable'[Customer PID]),
+        'YourTable'[Channel Name] = "кв# Стара Загора",
+        'YourTable'[Shop] = "А1 м-н Ст. Загора,С. Велики 55"
+    )
+
+VAR CustomersInQuarter =
+    CALCULATE(
+        DISTINCTCOUNT('YourTable'[Customer PID]),
+        'YourTable'[Channel Name] = "кв# Стара Загора",
+        'YourTable'[Shop] = "А1 м-н Ст. Загора,С. Велики 55",
+        ALL('YourTable'[Quarter]),
+        'YourTable'[Quarter] = SELECTEDVALUE('YourTable'[Quarter])
+    )
+
+RETURN
+DIVIDE(CustomersInQuarter, TotalCustomers, 0)

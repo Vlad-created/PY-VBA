@@ -1,0 +1,23 @@
+'CustRefused'
+    custRefused% = 
+Var RefusedFilter= 
+FILTER('All Regions',
+        'All Regions'[Ticket_close_reason_mapping] = "Refused"
+)
+VAR custRefusedSUM = 
+CALCULATE(
+    SUM('All Regions'[custRefused]),RefusedFilter
+    )
+VAR RefusedSUM = 
+CALCULATE(
+    SUM('All Regions'[Refused]),RefusedFilter
+    )
+RETURN
+	(DIVIDE(custRefusedSUM, RefusedSUM, 0))
+
+'Format'
+    FormattedMSISDN = 
+FORMAT(
+    COUNT('All Regions'[MSISDN]),
+    "#,0"
+)
