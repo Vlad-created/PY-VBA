@@ -1,0 +1,36 @@
+let
+    Source = SharePoint.Files("https://a1g.sharepoint.com/sites/o365Reportsteam", [ApiVersion = 15]),
+    FilteredFiles = Table.SelectRows(Source, each 
+        Text.Contains([Folder Path], "Shared Documents/IPhone17_Sales_2025/Base") 
+        and Text.EndsWith([Name], ".csv")
+    ),
+    ConvertedTypes = Table.TransformColumnTypes(FilteredFiles, {{"Date modified", type datetime}}),
+    SortedFiles = Table.Sort(ConvertedTypes, {{"Date modified", Order.Descending}}),
+    LatestFile = SortedFiles{0}[Content],
+    CsvData = Csv.Document(LatestFile, [Delimiter = ",", Columns = 16, Encoding = 65001, QuoteStyle = QuoteStyle.None]),
+    #"Promoted Headers" = Table.PromoteHeaders(CsvData, [PromoteAllScalars = true]),
+    #"Changed Type" = Table.TransformColumnTypes(#"Promoted Headers", {
+        {"Time", type datetime}, 
+        {"equipment_category", type text}, 
+        {"equipment_brand", type text}, 
+        {"equipment_model", type text}, 
+        {"equipment_model_details", type text}, 
+        {"contract_type", type text}, 
+        {"Mobile_Fixed_MPOS", type text}, 
+        {"channel", type text}, 
+        {"zone", type text}, 
+        {"regionID", type text}, 
+        {"SHOP_ID", Int64.Type}, 
+        {"SHOP_NAME", type text}, 
+        {"ORDER_UNIT_ID", Int64.Type}
+    }),
+    #"Sorted Rows" = Table.Sort(#"Changed Type", {{"Time", Order.Ascending}}),
+    #"Filtered Rows1" = Table.SelectRows(#"Sorted Rows", each [equipment_brand] = "Apple"),
+    #"Filtered Rows" = Table.SelectRows(#"Filtered Rows1", each 
+    Text.Contains([equipment_model_details], "17", Comparer.OrdinalIgnoreCase) 
+    or Text.Contains([equipment_model_details], "Air", Comparer.OrdinalIgnoreCase)
+),
+    #"Filtered Rows2" = Table.SelectRows(#"Filtered Rows", each true),
+    #"Inserted Date" = Table.AddColumn(#"Filtered Rows2", "Date", each DateTime.Date([Time]), type date)
+in
+    #"Inserted Date"

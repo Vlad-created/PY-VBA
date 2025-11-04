@@ -1,0 +1,22 @@
+let
+    // read column from existing query/table Sales_Report_Workfile
+    Col = try Table.Column(Sales_Report_Workfile, "ORDER_CREATE_DATE") otherwise null,
+    NonNull = if Col = null then {} else List.RemoveNulls(Col),
+
+    // convert each value to a date using the PC's regional settings for text parsing
+    Converted = List.Transform(NonNull, each
+        try
+            if Value.Is(_, type date) then _
+            else if Value.Is(_, type datetime) or Value.Is(_, type datetimezone) then Date.From(_)
+            else if Value.Is(_, type text) then Date.FromText(Text.Trim(_), null)
+            else Date.From(_)
+        otherwise null
+    ),
+
+    ValidDates = List.RemoveNulls(Converted),
+    MaxDate = if List.Count(ValidDates) = 0 then null else List.Max(ValidDates),
+
+    // final result: either a date or null
+    Result = MaxDate
+in
+    Result

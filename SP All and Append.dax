@@ -1,0 +1,51 @@
+let
+    // Load all CSV files from the folder
+    Source = SharePoint.Files("https://a1g.sharepoint.com/sites/o365Reportsteam", [ApiVersion = 15]),
+    FilteredFiles = Table.SelectRows(Source, each 
+        Text.Contains([Folder Path], "Shared Documents/IPhone17_Sales_2025/Base") 
+        and Text.EndsWith([Name], ".csv")
+    ),
+    ConvertedTypes = Table.TransformColumnTypes(FilteredFiles, {{"Date modified", type datetime}}),
+    SortedFiles = Table.Sort(ConvertedTypes, {{"Date modified", Order.Descending}}),
+
+    // Load all files as tables
+    AddFileTable = Table.AddColumn(SortedFiles, "FileTable", each 
+        Table.PromoteHeaders(
+            Csv.Document([Content], [Delimiter = ",", Columns = 16, Encoding = 65001, QuoteStyle = QuoteStyle.None]), 
+            [PromoteAllScalars = true]
+        )
+    ),
+    CombinedData = Table.Combine(AddFileTable[FileTable]),
+
+    // Apply type transformations
+    #"Changed Type" = Table.TransformColumnTypes(CombinedData, {
+        {"Time", type datetime}, 
+        {"equipment_category", type text}, 
+        {"equipment_brand", type text}, 
+        {"equipment_model", type text}, 
+        {"equipment_model_details", type text}, 
+        {"contract_type", type text}, 
+        {"Mobile_Fixed_MPOS", type text}, 
+        {"channel", type text}, 
+        {"zone", type text}, 
+        {"regionID", type text}, 
+        {"SHOP_ID", Int64.Type}, 
+        {"SHOP_NAME", type text}, 
+        {"ORDER_UNIT_ID", Int64.Type}
+    }),
+
+    // Filter Apple and iPhone 17 or Air
+    #"Filtered Brand" = Table.SelectRows(#"Changed Type", each [equipment_brand] = "Apple"),
+    #"Filtered Model" = Table.SelectRows(#"Filtered Brand", each 
+        Text.Contains([equipment_model_details], "17", Comparer.OrdinalIgnoreCase) 
+        or Text.Contains([equipment_model_details], "Air", Comparer.OrdinalIgnoreCase)
+    ),
+
+    // Add Date column
+    #"Inserted Date" = Table.AddColumn(#"Filtered Model", "Date", each DateTime.Date([Time]), type date),
+
+    // Deduplicate: keep only the newest ORDER_UNIT_ID
+    #"Sorted by Time" = Table.Sort(#"Inserted Date", {{"Time", Order.Descending}}),
+    #"Removed Duplicates" = Table.Distinct(#"Sorted by Time", {"ORDER_UNIT_ID"})
+in
+    #"Removed Duplicates"

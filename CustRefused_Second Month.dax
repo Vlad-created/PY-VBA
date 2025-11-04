@@ -1,0 +1,90 @@
+CustRefused_Month2 = 
+VAR MonthList = VALUES('All Regions'[Order_Create_Month])
+VAR SortedMonths = 
+    ADDCOLUMNS(
+        MonthList,
+        "MonthRank", RANKX(MonthList, 'All Regions'[Order_Create_Month], , ASC)
+    )
+
+VAR SecondMonth = 
+    MINX(
+        FILTER(SortedMonths, [MonthRank] = 2),
+        'All Regions'[Order_Create_Month]
+    )
+
+VAR RefusedFilter = 
+    FILTER(
+        'All Regions',
+        'All Regions'[Ticket_close_reason_mapping] = "Refused" &&
+        'All Regions'[Order_Create_Month] = SecondMonth
+    )
+
+VAR custRefusedSUM = CALCULATE(SUM('All Regions'[custRefused]), RefusedFilter)
+VAR RefusedSUM = CALCULATE(SUM('All Regions'[Refused]), RefusedFilter)
+
+RETURN DIVIDE(custRefusedSUM, RefusedSUM, 0)
+
+--- 
+
+
+let
+    Source = Access.Database(File.Contents("\\virgo.mobiltel.bg\Work\OpControl\2016\Vlad\FBB Cancellation\fbb.accdb"), [CreateNavigationProperties=true]),
+    #"_All Regions" = Source{[Schema="",Item="All Regions"]}[Data],
+    #"Inserted Quarter" = Table.AddColumn(#"_All Regions", "Quarter", each Date.QuarterOfYear([ORDER_CREATE_DATE]), Int64.Type),
+    #"Inserted Week of Year" = Table.AddColumn(#"Inserted Quarter", "Week of Year", each Date.WeekOfYear([ORDER_CREATE_DATE]), Int64.Type),
+    #"Added Custom" = Table.AddColumn(#"Inserted Week of Year", "MonthName", each 
+    if [ORDER_CREATE_MONTH] = null then "N/A"
+    else if [ORDER_CREATE_MONTH] = 1 then "Jan" 
+    else if [ORDER_CREATE_MONTH] = 2 then "Feb" 
+    else if [ORDER_CREATE_MONTH] = 3 then "Mar" 
+    else if [ORDER_CREATE_MONTH] = 4 then "Apr" 
+    else if [ORDER_CREATE_MONTH] = 5 then "May" 
+    else if [ORDER_CREATE_MONTH] = 6 then "Jun" 
+    else if [ORDER_CREATE_MONTH] = 7 then "Jul" 
+    else if [ORDER_CREATE_MONTH] = 8 then "Aug" 
+    else if [ORDER_CREATE_MONTH] = 9 then "Sep" 
+    else if [ORDER_CREATE_MONTH] = 10 then "Oct" 
+    else if [ORDER_CREATE_MONTH] = 11 then "Nov" 
+    else if [ORDER_CREATE_MONTH] = 12 then "Dec" 
+    else "N/A"
+)
+in
+    #"Added Custom"
+
+
+
+    let
+    Source = Access.Database(File.Contents("\\virgo.mobiltel.bg\Work\OpControl\2016\Vlad\FBB Cancellation\fbb.accdb"), [CreateNavigationProperties=true]),
+    #"_All Regions" = Source{[Schema="",Item="All Regions"]}[Data],
+    #"Inserted Quarter" = Table.AddColumn(#"_All Regions", "Quarter", each Date.QuarterOfYear([ORDER_CREATE_DATE]), Int64.Type),
+    #"Inserted Week of Year" = Table.AddColumn(#"Inserted Quarter", "Week of Year", each Date.WeekOfYear([ORDER_CREATE_DATE]), Int64.Type),
+    
+    // Define month name mapping
+    MonthNames = [
+        1 = "Jan", 2 = "Feb", 3 = "Mar", 4 = "Apr",
+        5 = "May", 6 = "Jun", 7 = "Jul", 8 = "Aug",
+        9 = "Sep", 10 = "Oct", 11 = "Nov", 12 = "Dec"
+    ],
+
+    // Add MonthName column using lookup
+    #"Added MonthName" = Table.AddColumn(#"Inserted Week of Year", "MonthName", each Record.FieldOrDefault(MonthNames, [ORDER_CREATE_MONTH], "N/A"))
+in
+    #"Added MonthName"
+
+
+
+
+
+CustWatch Month2 = 
+VAR MonthList = VALUES('006 Select TV_Watched'[Order Create Month])
+VAR SortedMonths = 
+    ADDCOLUMNS(
+        MonthList, 
+        "MonthRank", RANKX(MonthList, [Order Create Month], ASC)
+    )
+VAR SecondMonth = 
+    MINX(
+        FILTER(SortedMonths, [MonthRank] = 2), 
+        '006 Select TV_Watched'[Order Create Month]
+    )
+VAR 

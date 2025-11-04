@@ -1,0 +1,16 @@
+CustRefused_Month1 = 
+VAR MonthList = VALUES('All Regions'[Order_Create_Month])
+VAR FirstMonth = MINX(MonthList, 'All Regions'[Order_Create_Month])
+
+VAR RefusedFilter = 
+    FILTER(
+        'All Regions',
+        'All Regions'[Ticket_close_reason_mapping] = "Refused" &&
+        'All Regions'[Order_Create_Month] = FirstMonth
+    )
+
+VAR custRefusedSUM = CALCULATE(SUM('All Regions'[custRefused]), RefusedFilter)
+VAR RefusedSUM = CALCULATE(SUM('All Regions'[Refused]), RefusedFilter)
+
+RETURN DIVIDE(custRefusedSUM, RefusedSUM, 0)
+

@@ -1,0 +1,110 @@
+let
+    // folder path - keep as a single variable for easier edits
+    FolderPath = "\\virgo.mobiltel.bg\Work\OpControl\2016\Vlad\FBB Cancellation\Base FBB Cancellation_Rate\New folder",
+
+    // enumerate files in folder and keep only .xlsx
+    FolderFiles = Folder.Files(FolderPath),
+    FilteredFiles = Table.SelectRows(FolderFiles, each Text.EndsWith([Name], ".xlsx")),
+
+    // ensure we have datetime columns available for sorting
+    ConvertedTypes = if Table.HasColumns(FilteredFiles, "Date modified")
+                     then Table.TransformColumnTypes(FilteredFiles, {{"Date modified", type datetime}})
+                     else if Table.HasColumns(FilteredFiles, "Date created")
+                     then Table.TransformColumnTypes(FilteredFiles, {{"Date created", type datetime}})
+                     else FilteredFiles,
+
+    // sort by best available date, fallback to Name
+    SortedFiles =
+        if Table.HasColumns(ConvertedTypes, "Date modified") then
+            Table.Sort(ConvertedTypes, {{"Date modified", Order.Descending}})
+        else if Table.HasColumns(ConvertedTypes, "Date created") then
+            Table.Sort(ConvertedTypes, {{"Date created", Order.Descending}})
+        else
+            Table.Sort(ConvertedTypes, {{"Name", Order.Descending}}),
+
+    // pick first file (latest). If none, create empty table flow
+    FirstRow = if Table.IsEmpty(SortedFiles) then null else SortedFiles{0},
+    LatestContent = if FirstRow = null then null else Record.FieldOrDefault(FirstRow, "Content", null),
+
+    // if no file found produce empty table with no error
+    SourceWorkbook = if LatestContent = null then #table({}, {}) else Excel.Workbook(LatestContent, false),
+
+    // find "Data" sheet
+    Data_Sheet = try SourceWorkbook{[Item="Data",Kind="Sheet"]}[Data] otherwise null,
+    Data_Table = if Data_Sheet = null then #table({}, {}) else Table.PromoteHeaders(Data_Sheet, [PromoteAllScalars=true]),
+
+    // apply types (defensive: only if table not empty)
+    #"Changed Type" =
+        if Table.IsEmpty(Data_Table) then
+            Data_Table
+        else
+            Table.TransformColumnTypes(Data_Table,{
+                {"ID_AsOf", Int64.Type}, {"AsOf", type datetime}, {"ORDER_CREATE_DATE_Min", type date},
+                {"ORDER_CREATE_DATE_Max", type text}, {"CloseReasonName", type text}, {"MSISDN", Int64.Type},
+                {"ORDER_CREATE_YEAR", Int64.Type}, {"ORDER_CREATE_MONTH", Int64.Type}, {"ORDER_CREATE_DATE", type text},
+                {"Common_Telco", type text}, {"Install_Status", type text}, {"Install_Status_Date", type text},
+                {"Schedule_Year", Int64.Type}, {"Schedule_Month", Int64.Type}, {"Schedule_Date", type date},
+                {"CHANNEL_NAME", type text}, {"CHANNEL_ID", Int64.Type}, {"DWH_SUBSCRIBER_ID", Int64.Type},
+                {"ORDER_Action_ID", Int64.Type}, {"ORDER_ID", Int64.Type}, {"CLS_CHANNEL", type text},
+                {"CLS_CHANNEL_GROUP", type text}, {"ORDER_STATUS", type text}, {"CUST_TYPE_LEVEL2", type text},
+                {"PID", Int64.Type}, {"SRC_OFFER_ID", type text}, {"OFFER_DESC", type text},
+                {"BSP_Marketing_Offer_Group", type text}, {"BSP_Marketing_Offer", type text}, {"Subs_Count_Max", Int64.Type},
+                {"BBSContract", type text}, {"RGU_GrossAdds", Int64.Type}, {"RGU_Soft_Migrations", Int64.Type},
+                {"TV_Upgrades", Int64.Type}, {"Install_Status_Month", type date}, {"Sales_Month", type date},
+                {"SoftMigration", type text}, {"Install_Status_Grouped", type text}, {"Months_from_Sales", Int64.Type},
+                {"Months_from_Sales_Group", type text}, {"Days_to_Install", Int64.Type}, {"TicketID", Int64.Type},
+                {"CID", Int64.Type}, {"ID", Int64.Type}, {"CorrelationID", type number},
+                {"OpenReasonName", type text}, {"CloseReasonGoupName", type text}, {"Type", type text},
+                {"TicketStatus", type text}, {"VisitDate", type text}, {"OpenByUserID", Int64.Type},
+                {"OpendByUserName", type text}, {"OpendByUserRegionGroup", type text}, {"OpendByUserTechDept", type text},
+                {"OpendByUserTechLevel", type text}, {"OpendByUserTechRegionName", type text}, {"AccountNumber", Int64.Type},
+                {"ServiceNumber", Int64.Type}, {"ContractNumber", type text}, {"OpenDate", type datetime},
+                {"CloseDate", type datetime}, {"MtelContract", Int64.Type}, {"ClosedMonth", Int64.Type},
+                {"ClosedYear", Int64.Type}, {"CloseReasonGroup_for report", type text}, {"FULL_USER_NAME", type text},
+                {"USER_NAME", type text}, {"CHANNEL_REGION", type text}, {"CHANNEL_SMALL_REGION", type text},
+                {"Provision_Year", Int64.Type}, {"Provision_Month", Int64.Type}, {"Ticket_Open_Date", type text},
+                {"Ticket_Closed_Date", type text}, {"Trunc_ticket_open_date", type text}, {"Trunc_ticket_closed_date", type text},
+                {"Ticket_Age", Int64.Type}, {"Ticket_Type", type text}, {"Ticket_type_mapping", type text},
+                {"Bundle", type text}, {"Backlog PV", type text}, {"Ticket_close_reason", type text},
+                {"Ticket_close_reason_mapping", type text}, {"Refused_Reasons_Grouped", type text}, {"City_By_Shop", type text},
+                {"Refused_by_Area", type text}, {"TicketComment", type text}, {"LastComment", type text},
+                {"AllComments", type text}
+            }),
+
+    // coerce MSISDN to text after initial types (keep ID_AsOf numeric)
+    #"Changed Type1" = if Table.IsEmpty(#"Changed Type") then #"Changed Type" else Table.TransformColumnTypes(#"Changed Type",{{"MSISDN", type text}}),
+
+    // reorder if the columns exist; if not, skip reorder to avoid errors
+    ColumnsToKeep = List.Intersect({Table.ColumnNames(#"Changed Type1"), {"ID_AsOf", "AsOf", "ORDER_CREATE_YEAR", "ORDER_CREATE_MONTH", "ORDER_CREATE_DATE", "ORDER_CREATE_DATE_Min", "ORDER_CREATE_DATE_Max", "CloseReasonName", "MSISDN", "Common_Telco", "Install_Status", "Install_Status_Date", "Schedule_Year", "Schedule_Month", "Schedule_Date", "CHANNEL_NAME", "CHANNEL_ID", "DWH_SUBSCRIBER_ID", "ORDER_Action_ID", "ORDER_ID", "CLS_CHANNEL", "CLS_CHANNEL_GROUP", "ORDER_STATUS", "CUST_TYPE_LEVEL2", "PID", "SRC_OFFER_ID", "OFFER_DESC", "BSP_Marketing_Offer_Group", "BSP_Marketing_Offer", "Subs_Count_Max", "BBSContract", "RGU_GrossAdds", "RGU_Soft_Migrations", "TV_Upgrades", "Install_Status_Month", "Sales_Month", "SoftMigration", "Install_Status_Grouped", "Months_from_Sales", "Months_from_Sales_Group", "Days_to_Install", "TicketID", "CID", "ID", "CorrelationID", "OpenReasonName", "CloseReasonGoupName", "Type", "TicketStatus", "VisitDate", "OpenByUserID", "OpendByUserName", "OpendByUserRegionGroup", "OpendByUserTechDept", "OpendByUserTechLevel", "OpendByUserTechRegionName", "AccountNumber", "ServiceNumber", "ContractNumber", "OpenDate", "CloseDate", "MtelContract", "ClosedMonth", "ClosedYear", "CloseReasonGroup_for report", "FULL_USER_NAME", "USER_NAME", "CHANNEL_REGION", "CHANNEL_SMALL_REGION", "Provision_Year", "Provision_Month", "Ticket_Open_Date", "Ticket_Closed_Date", "Trunc_ticket_open_date", "Trunc_ticket_closed_date", "Ticket_Age", "Ticket_Type", "Ticket_type_mapping", "Bundle", "Backlog PV", "Ticket_close_reason", "Ticket_close_reason_mapping", "Refused_Reasons_Grouped", "City_By_Shop", "Refused_by_Area", "TicketComment", "Планирана чрез", "За уточнение към търговец", "Брой За уточнение към търговец", "Коментар от търговец", "Брой Коментар от търговец", "LastComment", "AllComments"}}),
+
+    #"Reordered Columns" = if List.IsEmpty(ColumnsToKeep) then #"Changed Type1" else Table.ReorderColumns(#"Changed Type1", ColumnsToKeep),
+
+    // last 4 months calculation
+    TodayDate = Date.From(DateTime.LocalNow()),
+    MonthList = List.Transform({0..3}, each Date.AddMonths(TodayDate, -_)),
+    AllowedYearMonth = List.Transform(MonthList, each { Date.Year(_), Date.Month(_) }),
+
+    // sample value for ORDER_CREATE_MONTH
+    SampleMonthValue = try List.First(List.RemoveNulls(Table.Column(#"Reordered Columns", "ORDER_CREATE_MONTH"))) otherwise null,
+    IsYYYYMM = if SampleMonthValue = null then false else try (Number.From(SampleMonthValue) > 1000) otherwise false,
+
+    AllowedYYYYMM = List.Transform(AllowedYearMonth, each _{0} * 100 + _{1}),
+    AllowedPairsSet = AllowedYearMonth,
+
+    #"FilteredLast4Months" =
+        if Table.IsEmpty(#"Reordered Columns") then
+            #"Reordered Columns"
+        else if IsYYYYMM then
+            Table.SelectRows(#"Reordered Columns", each try List.Contains(AllowedYYYYMM, Number.From([ORDER_CREATE_MONTH])) otherwise false)
+        else
+            Table.SelectRows(#"Reordered Columns", each try List.Contains(AllowedPairsSet, { Number.From([ORDER_CREATE_YEAR]), Number.From([ORDER_CREATE_MONTH]) }) otherwise false),
+
+    // channel / telco filter
+    #"Filtered Rows" = Table.SelectRows(#"FilteredLast4Months", each ([CLS_CHANNEL] = "A1 Shops" or [CLS_CHANNEL] = "Franchise") and ([Common_Telco] = "Cable Internet" or [Common_Telco] = "Unlimited Internet")),
+
+    // replacements and removals
+    #"Replaced Errors" = Table.ReplaceErrorValues(#"Filtered Rows", {{"Schedule_Date", #date(1900, 1, 1)}}),
+    #"Removed Columns" = Table.RemoveColumns(#"Replaced Errors", List.Intersect({Table.ColumnNames(#"Replaced Errors"), {"SRC_OFFER_ID", "PID", "Subs_Count_Max", "BBSContract", "RGU_GrossAdds", "RGU_Soft_Migrations", "TV_Upgrades"}})),
+    #"Replaced Errors1" = Table.ReplaceErrorValues(#"Removed Columns", {{"AccountNumber", 0}})
+in
+    #"Replaced Errors1"

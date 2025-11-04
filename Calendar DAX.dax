@@ -1,0 +1,70 @@
+let
+    Source = 1,
+    StartDate = #date(2024, 1, 1),
+    EndDate = Date.EndOfYear(DateTime.Date(DateTime.FixedLocalNow())),
+    CurrentDate = SalesDateTo,
+    ListDates = List.Dates(StartDate, Number.From(EndDate - StartDate)+1, #duration(1,0,0,0)),
+    #"Converted to Table" = Table.FromList(ListDates, Splitter.SplitByNothing(), null, null, ExtraValues.Error),
+    #"Renamed Columns" = Table.RenameColumns(#"Converted to Table",{{"Column1", "Date"}}),
+    #"Changed Type" = Table.TransformColumnTypes(#"Renamed Columns",{{"Date", type date}}),
+    Month_nmb = Table.AddColumn(#"Changed Type", "MonthNum", each Date.Month([Date]), Int64.Type),
+    Year_nmb = Table.AddColumn(Month_nmb, "YearNum", each Date.Year([Date]), Int64.Type),
+    Month_short = Table.AddColumn(Year_nmb, "Month_Short", each Text.Start(Date.MonthName([Date]),3), type text),
+    Month_Long = Table.AddColumn(Month_short, "Month_Long", each Date.MonthName([Date]), type text),
+    Quarters = Table.AddColumn(Month_Long, "Quarter", each "Q" & Text.From(Date.QuarterOfYear([Date])), type text),
+    #"Inserted Quarter" = Table.AddColumn(Quarters, "QuarterNum", each Date.QuarterOfYear([Date]), Int64.Type),
+    CurMonthOffset = Table.AddColumn(Quarters, "CurMonthOffset", each ( Date.Year([Date]) - Date.Year(CurrentDate) ) * 12
++ Date.Month([Date]) - Date.Month(CurrentDate), Int64.Type),
+    CurQuarterOffset = Table.AddColumn(CurMonthOffset, "CurQuarterOffset", each /*Year Difference*/
+        ( Date.Year([Date]) - Date.Year(CurrentDate) )*4
+        /*Quarter Difference*/
+        + Number.RoundUp(Date.Month([Date]) / 3) 
+        - Number.RoundUp(Date.Month(CurrentDate) / 3), Int64.Type),
+    CurYearOffset = Table.AddColumn(CurQuarterOffset, "CurYearOffset", each Date.Year([Date]) - Date.Year(CurrentDate), Int64.Type),
+    CurrentDayOffset = Table.AddColumn(CurYearOffset, "CurrentDayOffset", each [Date] - CurrentDate),
+    #"Changed Type4" = Table.TransformColumnTypes(CurrentDayOffset,{{"CurrentDayOffset", Int64.Type}}),
+    #"Sorted Rows1" = Table.Sort(#"Changed Type4",{{"Date", Order.Descending}}),
+    CurWeekOffset = Table.AddColumn(#"Sorted Rows1", "CurWeekOffset", each ( Date.WeekOfYear([Date]) - Date.WeekOfYear(CurrentDate)) 
+, Int64.Type),
+    FutureDateFlag = Table.AddColumn(CurWeekOffset, "FutureDate", each if [Date] > CurrentDate then "Future" else "Past", type text),
+    FutureMonthFlag = Table.AddColumn(FutureDateFlag, "FutureMonth", each if Date.Month([Date]) > Date.Month(CurrentDate) then "Future" else "Past",
+    type text),
+    YearMonth = Table.AddColumn(FutureMonthFlag, "YearMonthNum", each [YearNum]*100+[MonthNum], Int64.Type),
+    MonthYear_long = Table.AddColumn(YearMonth, "MonthYearLong", each [Month_Short] & "-" & Text.From([YearNum]), type text),
+    YearMOnth_long = Table.AddColumn(MonthYear_long, "YearMonthLong", each Text.From([YearNum]) & "-" & [Month_Short], type text),
+    WeekdayNum = Table.AddColumn(YearMOnth_long, "WeekdayNum", each Date.DayOfWeek([Date],Day.Monday)+1, Int64.Type),
+    WeekDayName = Table.AddColumn(WeekdayNum, "WeekDayName", each Date.DayOfWeekName([Date]), type text),
+    WeekDayNameShort = Table.AddColumn(WeekDayName, "WeekDayNameShort", each if [WeekDayName] = "събота" then "сб" else if [WeekDayName] = "неделя" then "нд" else if [WeekDayName] = "понеделник" then "пн" else if [WeekDayName] = "вторник" then "вт" else if [WeekDayName] = "сряда" then "ср" else if [WeekDayName] = "четвъртък" then "чт" else if [WeekDayName] = "петък" then "пт" else null, type text),
+    Weekend = Table.AddColumn(WeekDayNameShort, "Weekend", each if [WeekdayNum] = 6 or [WeekdayNum] = 7
+then "Weekend"
+else "Weekday", type text),
+    StartOfWeekDate = Table.AddColumn(Weekend, "StartOfWeekDate", each Date.StartOfWeek([Date]),type date),
+    StartOfMonthDate = Table.AddColumn(StartOfWeekDate, "StartOfMonthDate", each Date.StartOfMonth([Date]), type date),
+    WeekNum = Table.AddColumn(StartOfMonthDate, "WeekNum", each Date.WeekOfYear([Date]), Int64.Type),
+    YearWeekNum = Table.AddColumn(WeekNum, "YearWeekNum", each [YearNum]*100+[WeekNum], Int64.Type),
+    DayOfYear = Table.AddColumn(YearWeekNum, "DayOfYear", each Date.DayOfYear([Date]), Int64.Type),
+    DayOfMonth = Table.AddColumn(DayOfYear, "DayOfMonth", each Date.Day([Date]), Int64.Type),
+    DayAndDayName = Table.AddColumn(DayOfMonth, "DayAndDayName", each Text.Combine({Text.From([DayOfMonth], "bg-BG"), [WeekDayNameShort]}, ","), type text),
+    Flag_YTD = Table.AddColumn(DayAndDayName, "Flag_YTD", each if Date.DayOfYear([Date]) <= Date.DayOfYear(CurrentDate)
+    then "YTD"
+    else null, type text
+    ),
+    Flag_MTD = Table.AddColumn(Flag_YTD, "Flag_MTD", each if Date.Day([Date]) <= Date.Day(CurrentDate)
+    then "MTD"
+    else null,  type text),
+    #"Merged Queries" = Table.NestedJoin(Flag_MTD, {"Date"}, Holidays, {"date"}, "Holidays", JoinKind.LeftOuter),
+    #"Expanded Holidays" = Table.ExpandTableColumn(#"Merged Queries", "Holidays", {"shops", "d2d"}, {"Holidays.shops", "Holidays.d2d"}),
+    // стария метод на естимация е: = Table.AddColumn(#"Expanded Holidays", "WorkingDays_Shops", each if [Holidays.shops] <> null then [Holidays.shops] else if [WeekdayNum] >= 6 then 0.25 else 1, type number)
+    WorkingDays_Shops = Table.AddColumn(#"Expanded Holidays", "WorkingDays_Shops", each if 
+([Date] = #date(2025, 5, 1) or [Date] = #date(2025, 5, 6) or [Date] = #date(2025, 5, 26) or [Date] = #date(2025, 9, 8) or [Date] = #date(2025, 9, 22)) then 0.5 else if 
+[Holidays.d2d] <> null then [Holidays.d2d] else if [WeekdayNum] >= 6 then 0 else 1, type number),
+    WorkingDays_D2D = Table.AddColumn(WorkingDays_Shops, "WorkingDays_D2D",each if [Holidays.d2d] <> null then [Holidays.d2d] else if [WeekdayNum] >= 6 then 0 else 1, type number),
+    #"Changed Type1" = Table.TransformColumnTypes(WorkingDays_D2D,{{"YearMonthNum", Int64.Type}}),
+    #"Sorted Rows" = Table.Sort(#"Changed Type1",{{"Date", Order.Ascending}}),
+    Date_visual = Table.AddColumn(#"Sorted Rows", "Date_visual", each Text.From([DayOfMonth])& "." & Text.From([MonthNum])& "." , type text ),
+    MonthYear_vis_num = Table.AddColumn(Date_visual, "MonthYear_vis", each Text.From([MonthNum]) &" '"& Text.End(Text.From([YearNum]),2)),
+    MonthYear_vis_short = Table.AddColumn(MonthYear_vis_num, "MonthYear_vis_short", each [Month_Short]&" '"& Text.End(Text.From([YearNum]),2)),
+    YearNum_short_vis = Table.AddColumn(MonthYear_vis_short, "YearNum_short_vis", each "'"& Text.End(Text.From([YearNum]),2)),
+    #"Changed Type2" = Table.TransformColumnTypes(YearNum_short_vis,{{"YearNum_short_vis", type text}, {"MonthYear_vis", type text}, {"MonthYear_vis_short", type text}})
+in
+    #"Changed Type2"
