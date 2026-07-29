@@ -6,7 +6,7 @@ SENDER = "revenue.bz@a1.bg"
 SUBJECT = "Regular report reg_user_shop_info is done. Details in mail."
 
 # Destination file (existing Excel file to overwrite)
-destination_path = r"\\virgo.mobiltel.bg\Work\OpControl\2016\Bonuses\Ranking\Rank_PBI\User Names - Copy.xlsx"
+destination_path = r"\\virgo.mobiltel.bg\Work\OpControl\2016\Bonuses\Ranking\Rank_PBI\User Names.xlsx"
 
 # Start Outlook
 outlook = win32.Dispatch("Outlook.Application").GetNamespace("MAPI")

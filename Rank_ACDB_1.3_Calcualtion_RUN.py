@@ -6,7 +6,7 @@ import time
 subprocess.call("taskkill /f /im msaccess.exe", shell=True)
 
 db_path = r"\\virgo.mobiltel.bg\Work\OpControl\2016\Bonuses\Ranking\Rank_PBI\Rank Calcualtions.accdb"
-macro_name = "1_Macro1"
+macros = ["1_Macro1", "2_Macro2", "3_Macro3"]
 
 # Start Access
 access = win32.Dispatch("Access.Application")
@@ -15,9 +15,11 @@ access.Visible = False
 # Open DB
 access.OpenCurrentDatabase(db_path)
 
-print("Running macro...")
-access.DoCmd.RunMacro(macro_name)
-print("Macro completed.")
+for m in macros:
+    print(f"Running macro: {m}")
+    access.DoCmd.RunMacro(m)
+    print(f"Completed: {m}")
+    time.sleep(1)  # optional, gives Access breathing room
 
 # Close DB
 access.CloseCurrentDatabase()

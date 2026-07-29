@@ -34,10 +34,11 @@ run_access_macro(
     "Macro1"
 )
 
-# 3️⃣ Third ACCDB (your original one)
-run_access_macro(
-    r"\\virgo.mobiltel.bg\Work\OpControl\2016\Bonuses\Ranking\Rank_PBI\Rank Calcualtions.accdb",
-    "1_Macro1"
-)
+# 3️⃣ Third ACCDB — run 3 macros in sequence
+third_db = r"\\virgo.mobiltel.bg\Work\OpControl\2016\Bonuses\Ranking\Rank_PBI\Rank Calcualtions.accdb"
+third_macros = ["1_Macro1", "2_Macro2", "3_Macro3"]
+
+for m in third_macros:
+    run_access_macro(third_db, m)
 
 print("\nAll macros executed successfully.")

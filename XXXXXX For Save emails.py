@@ -1,79 +1,35 @@
-import win32com.client as win32
-import os
+import zipfile
 import shutil
+import os
+from tempfile import mkdtemp
 
-# Match parameters
-SENDER_NAME = "SQL Replica"
-SUBJECT_MATCH = "ESignConsent"
+input_file = r"C:\Users\a1bg542048\OneDrive - A1 Telekom Austria AG\Desktop\Check check .xlsx"
+output_file = r"C:\Users\a1bg542048\OneDrive - A1 Telekom Austria AG\Desktop\Check check_unlocked.xlsx"
 
-# Destination file to overwrite
-destination_path = r"\\virgo.mobiltel.bg\Work\OpControl\2016\Vlad\Adhoc\Check\ESignConsent_New.txt"
+tmpdir = mkdtemp()
 
-# Start Outlook
-outlook = win32.Dispatch("Outlook.Application").GetNamespace("MAPI")
+with zipfile.ZipFile(input_file, 'r') as zin:
+    zin.extractall(tmpdir)
 
-# Access Inbox → SQL Replica subfolder
-try:
-    inbox = outlook.GetDefaultFolder(6)  # Inbox
-    target_folder = inbox.Folders["SQL Replica"]
-except:
-    print("Subfolder 'SQL Replica' not found inside your Inbox.")
-    exit()
+rels_path1 = os.path.join(tmpdir, "xl", "workbook.xml")
+rels_path2 = os.path.join(tmpdir, "xl", "workbook.xml.rels")
+rels_path3 = os.path.join(tmpdir, "xl", "_rels", "workbook.xml.rels")
 
-# Get newest messages first
-messages = target_folder.Items
-messages.Sort("ReceivedTime", True)
+paths = [rels_path1, rels_path2, rels_path3]
 
-# Find the newest matching email
-target_email = None
-for msg in messages:
-    if msg.Class == 43:  # MailItem
-        sender = msg.SenderName.strip().lower()
-        subject = msg.Subject.strip().lower()
-        if SENDER_NAME.lower() in sender and SUBJECT_MATCH.lower() in subject:
-            target_email = msg
-            break
+for path in paths:
+    if os.path.exists(path):
+        with open(path, "r", encoding="utf-8") as f:
+            xml = f.read()
 
-if not target_email:
-    print("No matching email found in folder 'SQL Replica'.")
-    exit()
+        if "fileSharing" in xml:
+            xml = xml.replace(
+                xml[xml.find("<fileSharing"):xml.find("/>", xml.find("<fileSharing"))+2],
+                ""
+            )
 
-print(f"Found email:")
-print(f"  From: {target_email.SenderName}")
-print(f"  Subject: {target_email.Subject}")
-print(f"  Received: {target_email.ReceivedTime}")
+            with open(path, "w", encoding="utf-8") as f:
+                f.write(xml)
 
-# Check attachments
-if target_email.Attachments.Count == 0:
-    print("Email has no attachments.")
-    exit()
-
-attachment = target_email.Attachments.Item(1)
-
-# Save XLS to temp
-temp_xls = os.path.join(os.environ["TEMP"], attachment.FileName)
-attachment.SaveAsFile(temp_xls)
-
-print(f"Downloaded attachment: {attachment.FileName}")
-
-# Convert XLS → TXT using Excel COM
-excel = win32.Dispatch("Excel.Application")
-excel.Visible = False
-
-wb = excel.Workbooks.Open(temp_xls)
-
-# Save as TXT (tab-delimited)
-temp_txt = os.path.join(os.environ["TEMP"], "ESignConsent_temp.txt")
-wb.SaveAs(temp_txt, FileFormat=win32.constants.xlTextWindows)
-
-wb.Close(False)
-excel.Quit()
-
-# Copy TXT over destination
-shutil.copyfile(temp_txt, destination_path)
-
-# Cleanup
-os.remove(temp_xls)
-os.remove(temp_txt)
-
-print(f"Attachment converted and saved over:\n{destination_path}")
+shutil.make_archive(output_file.replace(".xlsx", ""), 'zip', tmpdir)
+os.rename(output_file.replace(".xlsx", "") + ".zip", output_file)
