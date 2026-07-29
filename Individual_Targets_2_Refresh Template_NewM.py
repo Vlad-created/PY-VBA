@@ -1,11 +1,39 @@
 import time
 import win32com.client as win32
 
+def wait_for_refresh(wb, check_interval=1):
+    """Wait until all connections finish refreshing."""
+    while True:
+        refreshing = False
+
+        for conn in wb.Connections:
+            # OLEDB connections
+            try:
+                if conn.OLEDBConnection.Refreshing:
+                    refreshing = True
+                    break
+            except Exception:
+                pass
+
+            # ODBC connections
+            try:
+                if conn.ODBCConnection.Refreshing:
+                    refreshing = True
+                    break
+            except Exception:
+                pass
+
+        if not refreshing:
+            break
+
+        time.sleep(check_interval)
+
+
 file_path = r"\\virgo\Work\OpControl\2016\Bonuses\1_MassCurrMonth\Targets\Templete_newmonth.xlsx"
 
 # Start Excel
 excel = win32.Dispatch("Excel.Application")
-excel.Visible = True  # Show Excel window
+excel.Visible = True  # Keep Excel visible
 
 # Open workbook
 wb = excel.Workbooks.Open(file_path)
@@ -17,17 +45,25 @@ print("Queries found in workbook:")
 for q in query_names:
     print(" -", q)
 
-# Refresh all connections
+# Force synchronous refresh for OLEDB connections (optional but safer)
+for conn in wb.Connections:
+    try:
+        conn.OLEDBConnection.BackgroundQuery = False
+    except Exception:
+        pass
+
+# Refresh all
 wb.RefreshAll()
 
-# Wait for refresh to complete
-time.sleep(45)
+# Wait until Excel finishes refreshing
+print("\nWaiting for refresh to complete...")
+wait_for_refresh(wb)
 
-# Save only — do NOT close
+# Save only — keep Excel open
 wb.Save()
 
 print("\nThe following queries were refreshed and saved:")
 for q in query_names:
     print(" -", q)
 
-# Excel remains open with workbook visible
+print("\nExcel remains open. Close it manually when you're done.")
