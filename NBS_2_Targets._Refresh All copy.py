@@ -29,7 +29,7 @@ def refresh_workbook(path):
     excel.CalculateUntilAsyncQueriesDone()
 
     # Small delay to ensure model commits
-    time.sleep(1)
+    time.sleep(45)
 
     wb.Save()
     wb.Close()
