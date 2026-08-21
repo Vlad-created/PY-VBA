@@ -1,0 +1,7 @@
+2026-08-21 14:01:58,809 INFO Skipping taskkill of msaccess.exe and excel.exe (use --force-kill to enable).
+2026-08-21 14:01:58,863 INFO 
+=== Step: ACCESS - GOAT_FTW.accdb ===
+2026-08-21 14:01:58,867 INFO 
+Opening database:
+\\virgo.mobiltel.bg\Work\OpControl\2016\Bonuses\Ranking\Rank_PBI\GOAT_FTW.accdb
+2026-08-21 14:02:05,165 INFO Running macro: Macro1 - current month

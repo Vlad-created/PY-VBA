@@ -25,7 +25,7 @@ copy_targets = ["Total"]
 # Sheets to process
 sheets_to_process = [
 
-    "Opportunity",
+    
     "Upsell Revenue RSDN",
     "Voice",
     "Fix",
