@@ -5,3 +5,218 @@
 Opening database:
 \\virgo.mobiltel.bg\Work\OpControl\2016\Bonuses\Ranking\Rank_PBI\GOAT_FTW.accdb
 2026-08-21 14:02:05,165 INFO Running macro: Macro1 - current month
+2026-09-01 13:17:12,053 INFO Skipping taskkill of msaccess.exe and excel.exe (use --force-kill to enable).
+2026-09-01 13:17:12,062 INFO 
+=== Step: ACCESS - GOAT_FTW.accdb ===
+2026-09-01 13:17:12,068 INFO 
+Opening database:
+\\virgo.mobiltel.bg\Work\OpControl\2016\Bonuses\Ranking\Rank_PBI\GOAT_FTW.accdb
+2026-09-01 13:17:14,766 INFO Running macro: Macro1 - current month
+2026-09-01 13:23:18,270 INFO Database closed.
+2026-09-01 13:23:18,322 WARNING Attempt 1/3 failed for run_access_macros: (-2147352567, 'Exception occurred.', (0, None, "The Microsoft Access database engine cannot find the input table or query '|'. Make sure it exists and that its name is spelled correctly.", None, -1, -2146825210), None)
+2026-09-01 13:23:19,327 INFO 
+Opening database:
+\\virgo.mobiltel.bg\Work\OpControl\2016\Bonuses\Ranking\Rank_PBI\GOAT_FTW.accdb
+2026-09-01 13:23:21,281 INFO Running macro: Macro1 - current month
+2026-09-01 13:29:15,707 INFO Database closed.
+2026-09-01 13:29:15,746 WARNING Attempt 2/3 failed for run_access_macros: (-2147352567, 'Exception occurred.', (0, None, "The Microsoft Access database engine cannot find the input table or query '|'. Make sure it exists and that its name is spelled correctly.", None, -1, -2146825210), None)
+2026-09-01 13:29:17,754 INFO 
+Opening database:
+\\virgo.mobiltel.bg\Work\OpControl\2016\Bonuses\Ranking\Rank_PBI\GOAT_FTW.accdb
+2026-09-01 13:29:19,446 INFO Running macro: Macro1 - current month
+2026-09-01 13:35:14,946 INFO Database closed.
+2026-09-01 13:35:14,955 WARNING Attempt 3/3 failed for run_access_macros: (-2147352567, 'Exception occurred.', (0, None, "The Microsoft Access database engine cannot find the input table or query '|'. Make sure it exists and that its name is spelled correctly.", None, -1, -2146825210), None)
+2026-09-01 13:35:14,965 ERROR All 3 attempts failed for run_access_macros: (-2147352567, 'Exception occurred.', (0, None, "The Microsoft Access database engine cannot find the input table or query '|'. Make sure it exists and that its name is spelled correctly.", None, -1, -2146825210), None)
+2026-09-01 13:35:14,973 ERROR ERROR in step 'ACCESS - GOAT_FTW.accdb': (-2147352567, 'Exception occurred.', (0, None, "The Microsoft Access database engine cannot find the input table or query '|'. Make sure it exists and that its name is spelled correctly.", None, -1, -2146825210), None)
+2026-09-01 13:35:14,983 INFO 
+=== Step: ACCESS - Rank-ACDB.accdb ===
+2026-09-01 13:35:14,990 INFO 
+Opening database:
+\\virgo.mobiltel.bg\Work\OpControl\2016\Bonuses\Ranking\Rank_PBI\Rank-ACDB.accdb
+2026-09-01 13:35:16,902 INFO Running macro: Macro1
+2026-09-01 13:38:55,178 INFO   -> 'Macro1' completed.
+2026-09-01 13:39:00,623 INFO Database closed.
+2026-09-01 13:39:00,634 INFO 
+=== Step: EXCEL - Users_ALL_List_TW.xlsx ===
+2026-09-01 13:39:00,643 INFO 
+Opening workbook:
+\\virgo\Work\OpControl\2016\Bonuses\Ranking\Rank_PBI\1.Users_ALL_List_TW.xlsx
+2026-09-01 13:39:07,593 INFO Refreshing all connections/queries...
+2026-09-01 13:39:15,904 INFO Refresh finished in 0s.
+2026-09-01 13:39:16,248 INFO Workbook saved.
+2026-09-01 13:39:16,529 INFO Workbook closed.
+2026-09-01 13:39:16,538 INFO Excel closed.
+2026-09-01 13:39:16,548 INFO Waiting 5.0 seconds before next Excel file...
+2026-09-01 13:39:21,713 INFO 
+=== Step: EXCEL - Pivot_Gas_and_Sales.xlsm ===
+2026-09-01 13:39:21,727 INFO 
+Opening workbook:
+\\virgo.mobiltel.bg\Work\OpControl\2016\Bonuses\Ranking\Rank_PBI\Pivot_Gas_and_Sales.xlsm
+2026-09-01 13:39:26,987 INFO Refreshing all connections/queries...
+2026-09-01 13:40:12,315 INFO Refresh finished in 0s.
+2026-09-01 13:40:12,336 INFO Refreshing pivot tables...
+2026-09-01 13:40:12,379 INFO   Refreshing pivot 'PivotTable14' on sheet 'Gas_PortInPRP_лл'...
+2026-09-01 13:40:26,406 INFO   Refreshing pivot 'PivotTable16' on sheet 'Gas_PortInPRP_SA'...
+2026-09-01 13:40:38,683 INFO   Refreshing pivot 'PivotTable1' on sheet 'Gas_PortInVIVA_RS_лл'...
+2026-09-01 13:40:51,623 INFO   Refreshing pivot 'PivotTable16' on sheet 'Gas_PortInVIVA_RS_SA'...
+2026-09-01 13:41:02,533 INFO   Refreshing pivot 'PivotTable1' on sheet 'Gas_PortInTTL_лл'...
+2026-09-01 13:41:11,513 INFO   Refreshing pivot 'PivotTable2' on sheet 'Gas_PortInTTL_SA'...
+2026-09-01 13:41:20,233 INFO   Refreshing pivot 'PivotTable15' on sheet 'Gas_New_MM'...
+2026-09-01 13:41:29,049 INFO   Refreshing pivot 'PivotTable17' on sheet 'Gas_New_SA'...
+2026-09-01 13:41:37,647 INFO   Refreshing pivot 'PivotTable13' on sheet 'SalesFix_MM'...
+2026-09-01 13:41:59,500 INFO   Refreshing pivot 'PivotTable20' on sheet 'SalesFix_SA'...
+2026-09-01 13:42:15,224 INFO   Refreshing pivot 'PivotTable19' on sheet 'GasFix_MM'...
+2026-09-01 13:42:29,162 INFO   Refreshing pivot 'PivotTable21' on sheet 'GasFix_SA'...
+2026-09-01 13:42:37,948 INFO   Refreshing pivot 'PivotTable5' on sheet 'NetB_Offers_MM_UNL'...
+2026-09-01 13:42:47,719 INFO   Refreshing pivot 'PivotTable6' on sheet 'NetB_Offers_SA_UNL'...
+2026-09-01 13:42:57,349 INFO   Refreshing pivot 'PivotTable5' on sheet 'NetB_Offers_MM_BackUp'...
+2026-09-01 13:43:06,889 INFO   Refreshing pivot 'PivotTable6' on sheet 'NetB_Offers_SA_BackUp'...
+2026-09-01 13:43:16,676 INFO Refreshed 16 pivot table(s).
+2026-09-01 13:43:16,705 INFO Refresh finished in 0s.
+2026-09-01 13:43:34,459 INFO Workbook saved.
+2026-09-01 13:43:35,199 INFO Workbook closed.
+2026-09-01 13:43:35,234 INFO Excel closed.
+2026-09-01 13:43:35,239 INFO Waiting 5.0 seconds before next Excel file...
+2026-09-01 13:43:40,492 INFO 
+=== Step: EXCEL - GOAT_FTW_backup.xlsx (base->queries) ===
+2026-09-01 13:43:40,527 INFO 
+Opening workbook:
+\\virgo.mobiltel.bg\Work\OpControl\2016\Bonuses\Ranking\Rank_PBI\GOAT_FTW_backup.xlsx
+2026-09-01 13:43:47,413 INFO Refreshing base connection(s): ['GOAT_FTW']
+2026-09-01 13:43:47,435 INFO   Refreshing: GOAT_FTW
+2026-09-01 13:43:50,583 INFO Refresh finished in 0s.
+2026-09-01 13:43:50,625 INFO Refreshing 7 dependent quer(y/ies): ['Query - Group by Shop', 'Query - Group by User', 'Query - PIDs by Date', 'Query - PIDs_by_Date', 'Query - SAP Warehouse', 'Query - Total_table', 'Query - Users Names']
+2026-09-01 13:43:50,633 INFO   Refreshing: Query - Group by Shop
+2026-09-01 13:46:16,259 INFO Refresh finished in 0s.
+2026-09-01 13:46:16,313 INFO   Refreshing: Query - Group by User
+2026-09-01 13:51:09,640 INFO Refresh finished in 0s.
+2026-09-01 13:51:09,698 INFO   Refreshing: Query - PIDs by Date
+2026-09-01 13:51:16,934 INFO Refresh finished in 0s.
+2026-09-01 13:51:16,998 INFO   Refreshing: Query - PIDs_by_Date
+2026-09-01 13:51:17,072 INFO Refresh finished in 0s.
+2026-09-01 13:51:17,126 INFO   Refreshing: Query - SAP Warehouse
+2026-09-01 13:51:17,160 INFO Refresh finished in 0s.
+2026-09-01 13:51:17,165 INFO   Refreshing: Query - Total_table
+2026-09-01 13:51:17,197 INFO Refresh finished in 0s.
+2026-09-01 13:51:17,203 INFO   Refreshing: Query - Users Names
+2026-09-01 13:51:17,240 INFO Refresh finished in 0s.
+2026-09-01 13:51:17,244 INFO All dependent queries completed.
+2026-09-01 13:51:17,247 INFO Refreshing pivot tables...
+2026-09-01 13:51:17,287 INFO   Refreshing pivot 'PivotTable6' on sheet 'Shops'...
+2026-09-01 13:52:14,318 INFO   Refreshing pivot 'PivotTable2' on sheet 'Shops'...
+2026-09-01 13:53:04,120 INFO   Refreshing pivot 'PivotTable8' on sheet 'Users'...
+2026-09-01 13:53:57,046 INFO   Refreshing pivot 'PivotTable7' on sheet 'Users'...
+2026-09-01 13:54:59,134 INFO Refreshed 4 pivot table(s).
+2026-09-01 13:54:59,161 INFO Refresh finished in 0s.
+2026-09-01 13:55:01,580 INFO Workbook saved.
+2026-09-01 13:55:01,934 INFO Workbook closed.
+2026-09-01 13:55:01,966 INFO Excel closed.
+2026-09-01 13:55:01,970 INFO Waiting 5.0 seconds before next Excel file...
+2026-09-01 13:55:07,309 INFO 
+=== Step: EXCEL - Pivot_SC.xlsx ===
+2026-09-01 13:55:07,337 INFO 
+Opening workbook:
+\\virgo.mobiltel.bg\Work\OpControl\2016\Bonuses\Ranking\Rank_PBI\Pivot_SC.xlsx
+2026-09-01 13:55:12,792 INFO Refreshing all connections/queries...
+2026-09-01 13:55:52,092 INFO Refresh finished in 0s.
+2026-09-01 13:55:52,122 INFO Refreshing pivot tables...
+2026-09-01 13:55:52,147 INFO   Refreshing pivot 'PivotTable1' on sheet 'SC'...
+2026-09-01 13:56:19,411 INFO   Refreshing pivot 'PivotTable1' on sheet 'SC65+'...
+2026-09-01 13:56:46,634 INFO Refreshed 2 pivot table(s).
+2026-09-01 13:56:46,692 INFO Refresh finished in 0s.
+2026-09-01 13:56:59,159 INFO Workbook saved.
+2026-09-01 13:56:59,318 INFO Workbook closed.
+2026-09-01 13:56:59,330 INFO Excel closed.
+2026-09-01 13:56:59,336 INFO Waiting 5.0 seconds before next Excel file...
+2026-09-01 13:57:04,460 INFO 
+=== Step: EXCEL - RollOut.xlsx (links->queries) ===
+2026-09-01 13:57:04,497 INFO 
+Opening workbook:
+\\virgo.mobiltel.bg\Work\OpControl\2016\Bonuses\Ranking\Rank_PBI\RollOut.xlsx
+2026-09-01 13:57:12,175 INFO Updating workbook link(s)...
+2026-09-01 13:57:12,211 INFO   Updating workbook link: \\virgo.mobiltel.bg\Work\OpControl\2016\Regular_Daily_Reports\Georgi Tomov\Execution\A1 Shops Execution_for_Calculator.xlsx
+2026-09-01 13:57:12,997 INFO Workbook link(s) updated.
+2026-09-01 13:57:13,156 INFO Refreshing all queries...
+2026-09-01 13:57:42,792 INFO Refresh finished in 0s.
+2026-09-01 13:57:43,318 INFO Workbook saved.
+2026-09-01 13:57:44,011 INFO Workbook closed.
+2026-09-01 13:57:44,026 INFO Excel closed.
+2026-09-01 13:57:44,046 INFO Waiting 5.0 seconds before next Excel file...
+2026-09-01 13:57:49,201 INFO 
+=== Step: EXCEL - STAFF.xlsx ===
+2026-09-01 13:57:49,211 INFO 
+Opening workbook:
+\\virgo\Work\OpControl\2016\Bonuses\Ranking\Rank_PBI\STAFF.xlsx
+2026-09-01 13:57:54,135 INFO Refreshing all connections/queries...
+2026-09-01 13:58:19,585 INFO Refresh finished in 0s.
+2026-09-01 13:58:20,106 INFO Workbook saved.
+2026-09-01 13:58:20,646 INFO Workbook closed.
+2026-09-01 13:58:20,712 INFO Excel closed.
+2026-09-01 13:58:20,725 INFO Waiting 5.0 seconds before next Excel file...
+2026-09-01 13:58:25,860 INFO 
+=== Step: PBI CALCULATOR - Pivot_live_CALCULATOR.xlsx ===
+2026-09-01 13:58:25,867 INFO 
+Opening Power BI workbook:
+\\virgo\Work\OpControl\2016\Bonuses\Ranking\Rank_PBI\Pivot_live_CALCULATOR.xlsx
+2026-09-01 13:58:29,700 INFO Workbook opened.
+2026-09-01 13:58:29,896 INFO Power BI connection(s): ['pbiazure://api.powerbi.com 5b0bf4e2-fa78-466a-b11e-4572ab5ead22 Model']
+2026-09-01 14:05:34,511 INFO Microsoft / Power BI authentication confirmed.
+2026-09-01 14:05:34,518 INFO Refreshing Power BI connection...
+2026-09-01 14:05:34,526 INFO   Refreshing: pbiazure://api.powerbi.com 5b0bf4e2-fa78-466a-b11e-4572ab5ead22 Model
+2026-09-01 14:06:33,504 INFO Refresh finished in 0s.
+2026-09-01 14:06:33,511 INFO Power BI refresh completed.
+2026-09-01 14:06:33,755 INFO Dependent query: ['Query - Individual_TW']
+2026-09-01 14:06:33,760 INFO   Refreshing: Query - Individual_TW
+2026-09-01 14:06:38,767 INFO Refresh finished in 0s.
+2026-09-01 14:06:38,795 INFO Dependent query refresh completed.
+2026-09-01 14:06:38,800 INFO Refreshing ALL PivotTables...
+2026-09-01 14:06:38,818 INFO   Refreshing pivot 'PivotTable5' on sheet 'Revenue_Voice_SA'...
+2026-09-01 14:06:44,858 INFO   Refreshing pivot 'PivotTable6' on sheet 'Revenue_Fix_SA'...
+2026-09-01 14:06:50,791 INFO   Refreshing pivot 'PivotTable7' on sheet 'Revenue_Device_SA'...
+2026-09-01 14:06:56,743 INFO   Refreshing pivot 'PivotTable1' on sheet 'Stacks_SA'...
+2026-09-01 14:07:03,393 INFO Refreshed 4 pivot table(s).
+2026-09-01 14:07:03,404 INFO Refresh finished in 0s.
+2026-09-01 14:07:03,951 INFO Workbook saved.
+2026-09-01 14:07:04,399 INFO Workbook closed.
+2026-09-01 14:07:04,448 INFO Excel closed.
+2026-09-01 14:07:04,453 INFO Waiting 5.0 seconds before next Excel file...
+2026-09-01 14:07:09,685 INFO 
+=== Step: PBI EXECUTION - Pivot_live_EXECUTION.xlsx ===
+2026-09-01 14:07:09,691 INFO 
+Opening Power BI workbook:
+\\virgo\Work\OpControl\2016\Bonuses\Ranking\Rank_PBI\Pivot_live_EXECUTION.xlsx
+2026-09-01 14:07:15,308 INFO Workbook opened.
+2026-09-01 14:07:15,486 INFO Power BI connection(s): ['pbiazure://api.powerbi.com 04c4e0e9-4b4b-400d-bb2b-dae86dff2701 Model']
+2026-09-01 14:07:17,878 INFO Microsoft / Power BI authentication confirmed.
+2026-09-01 14:07:17,883 INFO Refreshing Power BI connection...
+2026-09-01 14:07:17,890 INFO   Refreshing: pbiazure://api.powerbi.com 04c4e0e9-4b4b-400d-bb2b-dae86dff2701 Model
+2026-09-01 14:08:15,124 INFO Refresh finished in 0s.
+2026-09-01 14:08:15,167 INFO Power BI refresh completed.
+2026-09-01 14:08:15,174 INFO Updating workbook links...
+2026-09-01 14:08:15,199 INFO   Updating workbook link: \\virgo\Work\OpControl\2016\Bonuses\Ranking\Rank_PBI\RollOut.xlsx
+2026-09-01 14:08:15,741 INFO Workbook link(s) updated.
+2026-09-01 14:08:15,768 INFO Refreshing ALL PivotTables...
+2026-09-01 14:08:15,786 INFO   Refreshing pivot 'PivotTable1' on sheet 'Revenue_MM'...
+2026-09-01 14:08:24,990 INFO   Refreshing pivot 'PivotTable2' on sheet 'Stacks_RET_MM'...
+2026-09-01 14:08:34,623 INFO   Refreshing pivot 'PivotTable3' on sheet 'Stacks_ACC_MM'...
+2026-09-01 14:08:43,921 INFO   Refreshing pivot 'PivotTable4' on sheet 'Stacks_CreditServ_MM'...
+2026-09-01 14:08:54,168 INFO   Refreshing pivot 'PivotTable1' on sheet 'days'...
+2026-09-01 14:09:03,372 INFO Refreshed 5 pivot table(s).
+2026-09-01 14:09:03,381 INFO Refresh finished in 0s.
+2026-09-01 14:09:03,667 INFO Workbook saved.
+2026-09-01 14:09:04,104 INFO Workbook closed.
+2026-09-01 14:09:04,158 INFO Excel closed.
+2026-09-01 14:09:04,165 INFO Waiting 5.0 seconds before next Excel file...
+2026-09-01 14:09:09,271 ERROR 
+Run completed with 1 failed step(s).
+2026-09-01 14:09:09,279 ERROR FAILED: ACCESS - GOAT_FTW.accdb -> (-2147352567, 'Exception occurred.', (0, None, "The Microsoft Access database engine cannot find the input table or query '|'. Make sure it exists and that its name is spelled correctly.", None, -1, -2146825210), None)
+2026-09-01 14:09:09,289 ERROR Fatal error: 1 task(s) failed. See log for details.
+2026-09-03 14:43:21,728 INFO Skipping taskkill of msaccess.exe and excel.exe (use --force-kill to enable).
+2026-09-03 14:43:21,780 INFO 
+=== Step: ACCESS - GOAT_FTW.accdb ===
+2026-09-03 14:43:21,789 INFO 
+Opening database:
+\\virgo.mobiltel.bg\Work\OpControl\2016\Bonuses\Ranking\Rank_PBI\GOAT_FTW.accdb
+2026-09-03 14:43:26,926 INFO Running macro: Macro1 - current month
+2026-09-03 15:48:07,773 WARNING Error quitting Access: Access.Application.Quit
+2026-09-03 15:48:07,860 INFO Database closed.

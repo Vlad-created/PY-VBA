@@ -1,4 +1,3 @@
-
 import argparse
 import functools
 import logging
@@ -313,8 +312,14 @@ def run_access_macros(db_path: str, macro_names: Iterable[str]):
     access = None
     try:
         access = DispatchEx("Access.Application")
-        access.Visible = False
+        access.Visible = True
         access.OpenCurrentDatabase(db_path)
+
+        try:
+            access.DoCmd.SetWarnings(False)
+        except Exception as e:
+            log(f"  WARNING: could not disable Access warnings: {e}", "warning")
+
         for macro_name in macro_names:
             log(f"Running macro: {macro_name}")
             access.DoCmd.RunMacro(macro_name)
@@ -449,7 +454,7 @@ def refresh_excel_queries(xlsx_path: str, save: bool = True, timeout: int = REFR
     saved = False
     try:
         excel = DispatchEx("Excel.Application")
-        excel.Visible = False
+        excel.Visible = True
         excel.DisplayAlerts = False
         excel.AskToUpdateLinks = False
 
@@ -531,7 +536,7 @@ def refresh_connection_then_queries(
 
     try:
         excel = DispatchEx("Excel.Application")
-        excel.Visible = False
+        excel.Visible = True
         excel.DisplayAlerts = False
         excel.AskToUpdateLinks = False
 
@@ -677,7 +682,7 @@ def refresh_links_then_queries(xlsx_path: str, save: bool = True, timeout: int =
     wb = None
     try:
         excel = DispatchEx("Excel.Application")
-        excel.Visible = False
+        excel.Visible = True
         excel.DisplayAlerts = False
         excel.AskToUpdateLinks = False
 

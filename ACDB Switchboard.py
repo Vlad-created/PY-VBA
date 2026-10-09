@@ -3,7 +3,7 @@ from datetime import datetime
 
 
 ACDB_FILES = [
-    r"\\virgo.mobiltel.bg\Work\OpControl\2016\Digital Signature\Digital_Signature.accdb",
+    
     r"\\virgo\Work\OpControl\2016\SALES\smart_app_ott_watched.accdb",
     r"\\virgo\Work\OpControl\2016\SALES\Digital Signature New.accdb",
     r"\\virgo\Work\OpControl\2016\SALES\Port in-out.accdb",
